@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hybrid Athlete Plan — 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0a0a0a;
+      --surface:  #141414;
+      --border:   #1f1f1f;
+      --border-2: #2a2a2a;
+      --text:     #e8e8e8;
+      --muted:    #888;
+      --dim:      #444;
+      --dimmer:   #333;
+
+      --purple: #a855f7;
+      --sky:    #38bdf8;
+      --amber:  #f59e0b;
+      --red:    #ef4444;
+      --green:  #34d399;
+      --blue:   #60a5fa;
+      --lime:   #86efac;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Barlow', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ─────────────────────────────────── */
+    .site-header {
+      padding: 44px 24px 0;
+      text-align: center;
+      position: relative;
+    }
+
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .tagline {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 4px;
+    }
+
+    .framework {
+      font-size: 0.75rem;
+      color: var(--dim);
+      margin-bottom: 32px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── WEEK NAV ────────────────────────────────── */
+    .nav-wrap {
+      padding: 0 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .week-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+      color: var(--muted);
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: #1c1c1c;
+      border-color: #383838;
+      color: var(--text);
+    }
+    .nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+    .today-btn {
+      background: #1a0d2e;
+      border-color: #5b21b655;
+      color: var(--purple);
+    }
+    .today-btn:hover:not(:disabled) {
+      background: #221040;
+      border-color: var(--purple);
+      color: var(--purple);
+    }
+
+    .week-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      text-align: center;
+      min-width: 220px;
+      text-transform: uppercase;
+    }
+    .week-label small {
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--dim);
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      margin-top: 3px;
+    }
+
+    /* ── PROGRESS BAR ────────────────────────────── */
+    .week-progress { margin-bottom: 32px; }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--dim);
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--purple), var(--sky));
+      border-radius: 2px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ── GRID ────────────────────────────────────── */
+    .week-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 14px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+
+    /* ── DAY CARD ────────────────────────────────── */
+    .day-card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .day-card:hover { border-color: var(--border-2); }
+
+    .day-card.today {
+      border-color: #a855f744;
+      box-shadow: 0 0 0 1px #a855f722, inset 0 1px 0 #a855f711;
+    }
+    .day-card.today::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 16px 16px 0 0;
+      background: linear-gradient(90deg, var(--purple), var(--sky));
+    }
+
+    .day-card.completed { border-color: #34d39933; }
+    .day-card.past { opacity: 0.6; }
+
+    /* card header */
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .day-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #fff;
+    }
+
+    .day-small-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--dim);
+      margin-top: 2px;
+    }
+
+    .badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .badge-push  { background: #1a0d2e; color: var(--purple); }
+    .badge-pull  { background: #001829; color: var(--sky); }
+    .badge-lower { background: #1a1000; color: var(--amber); }
+    .badge-speed { background: #1a0000; color: var(--red); }
+    .badge-easy  { background: #001a0d; color: var(--green); }
+    .badge-long  { background: #001829; color: var(--blue); }
+    .badge-rest  { background: #0a1a0a; color: var(--lime); }
+
+    /* progress pill */
+    .day-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--dimmer);
+      background: #111;
+      border: 1px solid #1e1e1e;
+      padding: 2px 9px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      transition: all 0.2s;
+    }
+    .day-pill.partial { color: var(--amber); border-color: #f59e0b2a; }
+    .day-pill.done    { color: var(--green); border-color: #34d3992a; }
+
+    .goal-line {
+      font-size: 0.71rem;
+      color: var(--dim);
+      font-style: italic;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    /* section */
+    .section-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.57rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+      margin: 12px 0 6px;
+    }
+
+    /* exercise list */
+    .exercise-list { list-style: none; }
+
+    .exercise-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 7px 0;
+      border-bottom: 1px solid #191919;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .exercise-item:last-child { border-bottom: none; }
+    .exercise-item.optional { opacity: 0.58; }
+    .exercise-item.checked  { opacity: 0.38; }
+    .exercise-item:hover .ex-box { border-color: var(--dimmer); }
+
+    /* custom checkbox */
+    .ex-box {
+      width: 16px;
+      height: 16px;
+      border-radius: 5px;
+      border: 1.5px solid #2e2e2e;
+      flex-shrink: 0;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+      background: transparent;
+    }
+    .exercise-item.checked .ex-box {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .checkmark {
+      display: none;
+      width: 10px;
+      height: 10px;
+    }
+    .checkmark path {
+      fill: none;
+      stroke: #0a0a0a;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .exercise-item.checked .checkmark { display: block; }
+
+    .ex-body { flex: 1; min-width: 0; }
+
+    .ex-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1px;
+    }
+
+    .ex-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #d8d8d8;
+      line-height: 1.3;
+    }
+    .exercise-item.checked .ex-name {
+      text-decoration: line-through;
+      color: var(--dim);
+    }
+
+    .ex-sets {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.67rem;
+      color: var(--dim);
+      margin-top: 1px;
+    }
+
+    .opt-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.52rem;
+      color: var(--dim);
+      background: #1a1a1a;
+      border: 1px solid #262626;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+
+    /* note box */
+    .note-box {
+      margin-top: 14px;
+      padding: 9px 13px;
+      background: #0e0e0e;
+      border-left: 2px solid var(--dimmer);
+      border-radius: 0 8px 8px 0;
+      font-size: 0.73rem;
+      color: var(--muted);
+      line-height: 1.55;
+      font-style: italic;
+    }
+    .note-box.purple { border-color: var(--purple); }
+    .note-box.sky    { border-color: var(--sky); }
+    .note-box.amber  { border-color: var(--amber); }
+    .note-box.red    { border-color: var(--red); }
+    .note-box.green  { border-color: var(--green); }
+    .note-box.blue   { border-color: var(--blue); }
+    .note-box.lime   { border-color: var(--lime); }
+
+    /* ── KEYBOARD HINT ───────────────────────────── */
+    .kb-hint {
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      color: #2a2a2a;
+      padding-bottom: 40px;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────── */
+    @media (max-width: 580px) {
+      h1 { font-size: 1.9rem; }
+      .week-grid { padding: 0 16px 50px; }
+      .nav-wrap { padding: 0 16px; }
+      .week-nav { gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="site-header">
+  <h1>Hybrid Athlete Plan</h1>
+  <p class="tagline">3 Lifts · 3 Runs · 1 Rest — repeat until December</p>
+  <p class="framework">@papanca.io framework &nbsp;·&nbsp; Mar 30 – Dec 31, 2026</p>
+</div>
+
+<div class="nav-wrap">
+  <div class="week-nav">
+    <button class="nav-btn" id="prevBtn" onclick="changeWeek(-1)" title="Previous week (← arrow)">← PREV</button>
+    <div class="week-label" id="weekLabel"></div>
+    <button class="nav-btn today-btn" onclick="goToToday()" title="Jump to current week">TODAY</button>
+    <button class="nav-btn" id="nextBtn" onclick="changeWeek(1)" title="Next week (→ arrow)">NEXT →</button>
+  </div>
+
+  <div class="week-progress">
+    <div class="progress-header">
+      <span id="progressLabel">Week progress</span>
+      <span id="progressCount">–</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+</div>
+
+<div class="week-grid" id="weekGrid"></div>
+
+<p class="kb-hint">← → arrow keys to navigate weeks</p>
+
+<script>
+// ═══════════════════════════════════════════════
+//  WORKOUT DATA
+// ═══════════════════════════════════════════════
+const WORKOUTS = {
+  1: {
+    name: 'Monday', type: 'Upper Push', badge: 'badge-push', noteColor: 'purple',
+    goal: 'Chest · Shoulders · Triceps · 40–50 min',
+    note: 'Build the push. Chase incremental PRs over time — small weights add up.',
+    sections: [
+      { title: 'Main Lifts', items: [
+        { label: 'A', name: 'Bench Press or DB Press', sets: '4 sets × 6–8 reps' },
+        { label: 'B', name: 'Incline DB Press', sets: '3 sets × 8–10 reps' },
+        { label: 'C', name: 'Shoulder Press', sets: '3 sets × 6–8 reps' },
+        { label: 'D', name: 'Dips or Tricep Pushdown', sets: '3 sets × 10–12 reps' },
+        { label: 'E', name: 'Lateral Raises', sets: '3 sets × 12–15 reps' },
+      ]},
+      { title: 'Accessories — pick 1–2', items: [
+        { name: 'Chest Flier', sets: '2 sets × 12–15 reps', optional: true },
+        { name: 'Overhead Triceps Extension', sets: '2 sets × 10–12 reps', optional: true },
+      ]}
+    ]
+  },
+  2: {
+    name: 'Tuesday', type: 'Speed Run', badge: 'badge-speed', noteColor: 'red',
+    goal: 'Get faster · Boost VO₂max · 45–60 min',
+    note: 'Hard but repeatable. Push the pace. Earn the fitness.',
+    sections: [
+      { title: 'Warm Up', items: [
+        { name: 'Easy Jog + Dynamic Drills', sets: '10 minutes' },
+      ]},
+      { title: 'Pick ONE Interval', items: [
+        { name: '6 × 800m at 5K pace', sets: '90 sec rest between reps', optional: true },
+        { name: '6 × 400m at 5K pace', sets: '90 sec rest between reps', optional: true },
+        { name: '10 × 200m fast', sets: 'Walk/jog recovery', optional: true },
+        { name: '20 min Tempo Run', sets: 'Comfortably hard pace', optional: true },
+      ]},
+      { title: 'Cool Down', items: [
+        { name: 'Easy Jog', sets: '10 minutes' },
+      ]}
+    ]
+  },
+  3: {
+    name: 'Wednesday', type: 'Upper Pull', badge: 'badge-pull', noteColor: 'sky',
+    goal: 'Back · Biceps · Posture · 40–50 min',
+    note: 'Pull with your back, not your arms. Slow the eccentric. Feel the lats.',
+    sections: [
+      { title: 'Main Lifts', items: [
+        { label: 'A', name: 'Pull-ups or Lat Pulldown', sets: '4 sets × 6–10 reps' },
+        { label: 'B', name: 'Barbell Row or Seated Row', sets: '3 sets × 6–8 reps' },
+        { label: 'C', name: 'Face Pulls', sets: '3 sets × 12–15 reps' },
+        { label: 'D', name: 'Hammer Curls', sets: '3 sets × 10–12 reps' },
+        { label: 'E', name: 'Reverse Fly', sets: '3 sets × 12–15 reps' },
+      ]},
+      { title: 'Accessories — pick 1–2', items: [
+        { name: 'Reverse Grip Pull Downs', sets: '2 sets × 10–12 reps', optional: true },
+        { name: 'Bicep Curls / Concentration Curls', sets: '2 sets × 10–12 reps', optional: true },
+        { name: 'Upright Rows', sets: '2 sets × 10–12 reps', optional: true },
+      ]}
+    ]
+  },
+  4: {
+    name: 'Thursday', type: 'Easy Run', badge: 'badge-easy', noteColor: 'green',
+    goal: 'Build aerobic base · 30–50 min',
+    note: 'Run at +1 or +2 min/km above interval pace. Add volume, don\'t exhaust yourself.',
+    sections: [
+      { title: 'Session', items: [
+        { label: 'Warm Up', name: 'Dynamic Mobility', sets: '5 minutes' },
+        { label: 'Main', name: 'Easy Run — Zone 2', sets: '30–50 min · Conversational · Nasal breathing' },
+      ]}
+    ]
+  },
+  5: {
+    name: 'Friday', type: 'Lower Body', badge: 'badge-lower', noteColor: 'amber',
+    goal: 'Strong legs without wrecking Saturday · 50–60 min',
+    note: 'Keep it controlled. Strong legs today = better run tomorrow.',
+    sections: [
+      { title: 'Main Lifts', items: [
+        { label: 'A', name: 'Squat or Hack Squat', sets: '3 sets × 5–6 reps' },
+        { label: 'B', name: 'Romanian Deadlift (RDL)', sets: '3 sets × 6–8 reps/leg' },
+        { label: 'C', name: 'Leg Press', sets: '3 sets × 8 reps/leg' },
+        { label: 'D', name: 'Bulgarian Split Squat', sets: '3 sets × 6 reps/leg' },
+        { label: 'E', name: 'Leg Curls', sets: '2 sets × 12–15 reps' },
+        { label: 'F', name: 'Calf Raises', sets: '3 sets × 12–15 reps' },
+      ]},
+      { title: 'Accessories — pick 3–4', items: [
+        { name: 'Goblet Squats', sets: '3 × 8 reps', optional: true },
+        { name: 'Step Ups', sets: '3 × 8 reps/leg', optional: true },
+        { name: 'Walking Lunges', sets: '3 × 10 reps/leg', optional: true },
+        { name: 'Glute Bridges', sets: '3 × 10 reps/leg', optional: true },
+        { name: 'Leg Extensions', sets: '2 × 8–10 reps', optional: true },
+        { name: 'Tibialis Raises', sets: '3 × 15–20 reps', optional: true },
+        { name: 'Copenhagen Planks', sets: '2–3 × 20–30 sec/side', optional: true },
+        { name: 'Hanging Leg Raises', sets: '2 × 10–12 reps', optional: true },
+      ]}
+    ]
+  },
+  6: {
+    name: 'Saturday', type: 'Long Run', badge: 'badge-long', noteColor: 'blue',
+    goal: 'Endurance · Aerobic base · 60–120 min',
+    note: 'Progressive last 20 min. Condition your mind to push distance. No shortcuts.',
+    sections: [
+      { title: 'Session', items: [
+        { label: 'Warm Up', name: 'Mobility + Easy Jog', sets: '5–10 minutes' },
+        { label: 'Main',    name: 'Long Run — Zone 2', sets: '60–120 minutes' },
+        { label: 'Fuel',    name: 'Every 45 min', sets: 'Gel, banana, or energy chews' },
+      ]}
+    ]
+  },
+  0: {
+    name: 'Sunday', type: 'Off / Mobility', badge: 'badge-rest', noteColor: 'lime',
+    goal: 'Recovery · This is where real gains come to life',
+    note: 'Treat this day as seriously as a training day. Gains happen in recovery.',
+    sections: [
+      { title: 'Recovery Protocol', items: [
+        { label: 'Move',     name: 'Walk', sets: '8,000–12,000 steps' },
+        { label: 'Mobility', name: 'Foam Roll + Light Stretch', sets: '10–15 min · Hips, quads, calves, shoulders' },
+        { label: 'Sleep',    name: '8+ Hours', sets: '+ Hydrate all day' },
+      ]}
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════
+//  DATE UTILITIES
+// ═══════════════════════════════════════════════
+// March 30 is a Monday — start of the first week
+const PLAN_START = new Date(2026, 2, 30);
+const PLAN_END   = new Date(2026, 11, 31);
+
+const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function toDateStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function sameDay(a, b) {
+  return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+}
+
+function fmtShort(d) {
+  return `${MONTHS_SHORT[d.getMonth()]} ${d.getDate()}`;
+}
+
+// Build all Mon–Sun weeks in range
+function buildWeeks() {
+  const weeks = [];
+  let ptr = new Date(PLAN_START); // already a Monday
+  while (ptr <= PLAN_END) {
+    const week = [];
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(ptr);
+      day.setDate(day.getDate() + i);
+      week.push(day);
+    }
+    weeks.push(week);
+    ptr.setDate(ptr.getDate() + 7);
+  }
+  return weeks;
+}
+
+const ALL_WEEKS = buildWeeks();
+
+function currentWeekIdx() {
+  const today = new Date();
+  for (let i = 0; i < ALL_WEEKS.length; i++) {
+    if (ALL_WEEKS[i].some(d => sameDay(d, today))) return i;
+  }
+  return today < PLAN_START ? 0 : ALL_WEEKS.length - 1;
+}
+
+// ═══════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════
+let weekIdx = currentWeekIdx();
+
+// ═══════════════════════════════════════════════
+//  LOCALSTORAGE
+// ═══════════════════════════════════════════════
+function lsKey(ds, si, ei) { return `hab:${ds}:${si}:${ei}`; }
+
+function getChecked(ds, si, ei) {
+  return localStorage.getItem(lsKey(ds, si, ei)) === '1';
+}
+
+function setChecked(ds, si, ei, val) {
+  if (val) localStorage.setItem(lsKey(ds, si, ei), '1');
+  else     localStorage.removeItem(lsKey(ds, si, ei));
+}
+
+// ═══════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════
+function svgCheck() {
+  return `<svg class="checkmark" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1.5 5 L4 7.5 L8.5 2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="#0a0a0a"/>
+  </svg>`;
+}
+
+function renderItem(ds, si, ei, item) {
+  const checked = getChecked(ds, si, ei);
+  const cls = ['exercise-item', item.optional ? 'optional' : '', checked ? 'checked' : ''].filter(Boolean).join(' ');
+  return `<li class="${cls}" id="ex:${ds}:${si}:${ei}" onclick="toggle('${ds}',${si},${ei})">
+    <div class="ex-box">${svgCheck()}</div>
+    <div class="ex-body">
+      ${item.label ? `<div class="ex-label">${item.label}</div>` : ''}
+      <div class="ex-name">${item.name}${item.optional ? '<span class="opt-tag">optional</span>' : ''}</div>
+      <div class="ex-sets">${item.sets}</div>
+    </div>
+  </li>`;
+}
+
+function renderCard(d) {
+  const today = new Date();
+  const dow = d.getDay();
+  const w = WORKOUTS[dow];
+  if (!w) return '';
+
+  const ds = toDateStr(d);
+  const isToday = sameDay(d, today);
+  const isPast  = !isToday && d < today;
+
+  // Day progress
+  let total = 0, done = 0;
+  w.sections.forEach((sec, si) => sec.items.forEach((_, ei) => {
+    total++;
+    if (getChecked(ds, si, ei)) done++;
+  }));
+
+  const pillCls = done === 0 ? '' : done === total ? 'done' : 'partial';
+  const pillTxt = `${done}/${total} done`;
+
+  const cardCls = [
+    'day-card',
+    isToday    ? 'today' : '',
+    isPast     ? 'past'  : '',
+    done === total && total > 0 ? 'completed' : ''
+  ].filter(Boolean).join(' ');
+
+  const sectionsHTML = w.sections.map((sec, si) => `
+    <div class="section-title">${sec.title}</div>
+    <ul class="exercise-list">
+      ${sec.items.map((item, ei) => renderItem(ds, si, ei, item)).join('')}
+    </ul>`).join('');
+
+  return `<div class="${cardCls}" id="card:${ds}">
+    <div class="card-top">
+      <div>
+        <div class="day-name">${w.name}</div>
+        <div class="day-small-date">${fmtShort(d)}${isToday ? ' · Today' : ''}</div>
+      </div>
+      <span class="badge ${w.badge}">${w.type}</span>
+    </div>
+    <div><span class="day-pill ${pillCls}" id="pill:${ds}">${pillTxt}</span></div>
+    <div class="goal-line">${w.goal}</div>
+    ${sectionsHTML}
+    <div class="note-box ${w.noteColor}">${w.note}</div>
+  </div>`;
+}
+
+function weekProgress(week) {
+  let total = 0, done = 0;
+  week.filter(d => d >= PLAN_START && d <= PLAN_END).forEach(d => {
+    const ds = toDateStr(d);
+    const w = WORKOUTS[d.getDay()];
+    if (!w) return;
+    w.sections.forEach((sec, si) => sec.items.forEach((_, ei) => {
+      total++;
+      if (getChecked(ds, si, ei)) done++;
+    }));
+  });
+  return { total, done };
+}
+
+function render() {
+  const week = ALL_WEEKS[weekIdx];
+  const visibleDays = week.filter(d => d >= PLAN_START && d <= PLAN_END);
+
+  // Week label
+  const ws = week[0], we = week[6];
+  const rangeStr = ws.getMonth() === we.getMonth()
+    ? `${MONTHS_SHORT[ws.getMonth()]} ${ws.getDate()}–${we.getDate()}`
+    : `${MONTHS_SHORT[ws.getMonth()]} ${ws.getDate()} – ${MONTHS_SHORT[we.getMonth()]} ${we.getDate()}`;
+  document.getElementById('weekLabel').innerHTML =
+    `Week ${weekIdx + 1} of ${ALL_WEEKS.length}<small>${rangeStr}, 2026</small>`;
+
+  // Buttons
+  document.getElementById('prevBtn').disabled = weekIdx === 0;
+  document.getElementById('nextBtn').disabled = weekIdx === ALL_WEEKS.length - 1;
+
+  // Cards
+  document.getElementById('weekGrid').innerHTML = visibleDays.map(renderCard).join('');
+
+  // Progress bar
+  updateProgress(week);
+}
+
+function updateProgress(week) {
+  const { total, done } = weekProgress(week);
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressCount').textContent = total ? `${done} / ${total}` : '–';
+  document.getElementById('progressLabel').textContent =
+    pct === 100 ? '🏆 Perfect week!' : `Week progress · ${pct}%`;
+}
+
+// ═══════════════════════════════════════════════
+//  INTERACTION
+// ═══════════════════════════════════════════════
+function toggle(ds, si, ei) {
+  const wasChecked = getChecked(ds, si, ei);
+  setChecked(ds, si, ei, !wasChecked);
+
+  // Update exercise item
+  const el = document.getElementById(`ex:${ds}:${si}:${ei}`);
+  if (el) {
+    el.classList.toggle('checked', !wasChecked);
+    const svg = el.querySelector('.checkmark');
+    if (svg) svg.style.display = !wasChecked ? 'block' : 'none';
+  }
+
+  // Recalculate day pill + card state
+  const w = WORKOUTS[new Date(ds + 'T00:00:00').getDay()];
+  if (w) {
+    let total = 0, done = 0;
+    w.sections.forEach((sec, si2) => sec.items.forEach((_, ei2) => {
+      total++;
+      if (getChecked(ds, si2, ei2)) done++;
+    }));
+    const pill = document.getElementById(`pill:${ds}`);
+    if (pill) {
+      pill.textContent = `${done}/${total} done`;
+      pill.className = `day-pill ${done === 0 ? '' : done === total ? 'done' : 'partial'}`;
+    }
+    const card = document.getElementById(`card:${ds}`);
+    if (card) {
+      card.classList.toggle('completed', done === total && total > 0);
+    }
+  }
+
+  updateProgress(ALL_WEEKS[weekIdx]);
+}
+
+function changeWeek(delta) {
+  weekIdx = Math.max(0, Math.min(ALL_WEEKS.length - 1, weekIdx + delta));
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goToToday() {
+  weekIdx = currentWeekIdx();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowLeft')  changeWeek(-1);
+  if (e.key === 'ArrowRight') changeWeek(1);
+});
+
+// ═══════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>
